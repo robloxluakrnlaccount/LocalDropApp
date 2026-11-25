@@ -216,7 +216,13 @@ struct VideoPage: View {
         .task(id: item.name) {
             model.configure(volume: settings.volume, muted: settings.muted)
             model.onVolumeChanged = { v, m in settings.volume = v; settings.muted = m }
-            if let t = ctx.thumbURL(item) { poster = ImageLoader.shared.cached(t) ?? (await ImageLoader.shared.load(t)) }
+            if let t = ctx.thumbURL(item) {
+                if let cached = ImageLoader.shared.cached(t) {
+                    poster = cached
+                } else {
+                    poster = await ImageLoader.shared.load(t)
+                }
+            }
             if let u = ctx.srcURL(item) {
                 model.load(url: u, headers: store.api.authHeaders)
                 if active { model.play() }

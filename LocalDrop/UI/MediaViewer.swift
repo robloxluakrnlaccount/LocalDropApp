@@ -178,7 +178,13 @@ struct ImagePage: View {
             if full == nil && thumb == nil { ProgressView().controlSize(.large).tint(.white) }
         }
         .task(id: item.name) {
-            if let t = ctx.thumbURL(item) { thumb = ImageLoader.shared.cached(t) ?? (await ImageLoader.shared.load(t)) }
+            if let t = ctx.thumbURL(item) {
+                if let cached = ImageLoader.shared.cached(t) {
+                    thumb = cached
+                } else {
+                    thumb = await ImageLoader.shared.load(t)
+                }
+            }
             if let s = ctx.srcURL(item) { full = await ImageLoader.shared.load(s, animatedGIF: item.ext == "gif") }
         }
     }
