@@ -1,0 +1,43 @@
+# Generate the Xcode project with:  brew install xcodegen && xcodegen generate
+name: LocalDrop
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: "26.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+targets:
+  LocalDrop:
+    type: application
+    platform: iOS
+    sources:
+      - LocalDrop
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.LocalDrop
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+    info:
+      path: LocalDrop/Info.plist
+      properties:
+        CFBundleDisplayName: LocalDrop
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        # Required: the app talks to server.py on your LAN
+        NSLocalNetworkUsageDescription: LocalDrop connects to the LocalDrop server on your Wi-Fi to send and receive files and photos.
+        # server.py speaks plain http on the LAN; this allows it for IP addresses and .local names
+        # without turning App Transport Security off for the rest of the app.
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        # The share sheet's "Save Image / Save Video" action
+        NSPhotoLibraryAddUsageDescription: LocalDrop saves the photos and videos you download to your library.
