@@ -116,10 +116,13 @@ struct MediaViewer: View {
         guard let c = current else { return }
         // Original file, never the preview copy: the download route returns the file as uploaded.
         guard let u = ctx.srcURL(c) else { return }
-        var comps = URLComponents(url: u, resolvingAgainstBaseURL: false)
-        comps?.queryItems = comps?.queryItems?.filter { $0.name != "inline" }
-        if comps?.queryItems?.isEmpty == true { comps?.queryItems = nil }
-        if let local = await store.fetchLocal(comps?.url ?? u, name: c.name) { shareURL = ShareItem(url: local) }
+        var downloadURL = u
+        if var comps = URLComponents(url: u, resolvingAgainstBaseURL: false) {
+            let queryItems = (comps.queryItems ?? []).filter { $0.name != "inline" }
+            comps.queryItems = queryItems.isEmpty ? nil : queryItems
+            downloadURL = comps.url ?? u
+        }
+        if let local = await store.fetchLocal(downloadURL, name: c.name) { shareURL = ShareItem(url: local) }
     }
 
     private func deleteCurrent() async {
